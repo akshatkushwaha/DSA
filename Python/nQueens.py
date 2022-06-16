@@ -10,7 +10,7 @@
 # Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.
 
 class Solution:
-    def solveNQueens(self, n: int) -> List[List[str]]:
+    def solveNQueens(self, n: int) -> list[list[str]]:
         def DFS(queens, xy_dif, xy_sum):
             print(queens)
             if len(queens) == n:
@@ -23,3 +23,9 @@ class Solution:
         result = []
         DFS([], [], [])
         return [['.' * i + 'Q' + '.' * (n - i - 1) for i in sol] for sol in result]
+
+
+# display the solution
+for sol in Solution().solveNQueens(4):
+    print(sol)
+    print('\n')
