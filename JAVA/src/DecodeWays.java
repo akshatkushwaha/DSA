@@ -7,6 +7,7 @@ public class DecodeWays {
 
         public ArrayList<String> numDecodings(int num) {
             ArrayList<String> result = new ArrayList<>();
+            ArrayList<String> result2 = new ArrayList<>();
             String query = String.valueOf(num);
             for (int i = 0; i < 26; ++i) {
                 map.put(i + 1, String.valueOf((char) (i + 'a')));
@@ -14,11 +15,17 @@ public class DecodeWays {
             }
 
             ArrayList<StringBuilder> answer = helper(query);
+            ArrayList<StringBuilder> answer2 = new ArrayList<>();
+
+            helper2(query, new StringBuilder(), answer2);
 
             for (StringBuilder ans : answer)
                 result.add(ans.toString());
 
-            return result;
+            for (StringBuilder ans : answer2)
+                result2.add(ans.toString());
+
+            return result2;
         }
 
         private ArrayList<StringBuilder> helper(String query) {
@@ -44,6 +51,24 @@ public class DecodeWays {
             }
 
             return result;
+        }
+
+        private void helper2(String query, StringBuilder result, ArrayList<StringBuilder> results) {
+            if (query.length() == 0) {
+                results.add(result);
+                return;
+            }
+            if (query.length() == 1) {
+                helper2(query.substring(1), result.append(map.get(Integer.parseInt(query))), results);
+                return;
+            }
+
+            for (int i = 0; i < 2; ++i) {
+                int number = Integer.parseInt(query.substring(0, i + 1));
+                if (number <= 52) {
+                    helper2(query.substring(i + 1), new StringBuilder(result + map.get(number)), results);
+                }
+            }
         }
     }
 
