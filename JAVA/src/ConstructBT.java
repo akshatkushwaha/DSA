@@ -3,6 +3,12 @@ import java.util.Arrays;
 public class ConstructBT {
     public static void main(String[] args) {
 
+        int[] inorder = {9,3,15,20,7};
+        int[] preorder = {3,9,20,15,7};
+        int[] postorder = {9,15,7,20,3};
+
+        TreeNode root = buildTreeInorderPostorder(inorder, postorder);
+
     }
 
     public static TreeNode buildTreePreorderInorder(int[] preorder, int[] inorder){
@@ -43,7 +49,40 @@ public class ConstructBT {
     }
 
     public static TreeNode buildTreeInorderPostorder(int[] inorder, int[] postorder){
-        TreeNode root = new TreeNode();
+        if(postorder.length == 0)
+            return null;
+
+        int current = postorder[postorder.length - 1];
+        TreeNode root = new TreeNode(current);
+
+        if(postorder.length == 1)
+            return root;
+
+        int position = -1;
+
+        for(int i = 0; i < inorder.length; ++i)
+            if(inorder[i] == current){
+                position = i;
+                break;
+            }
+
+        int[] rightPostorder = new int[postorder.length - position - 1];
+        int[] rightInorder = new int[postorder.length - position - 1];
+        int[] leftPostorder = new int[position];
+        int[] leftInorder = new int[position];
+
+        System.arraycopy(inorder, 0, leftInorder, 0, position);
+        System.arraycopy(inorder, position + 1, rightInorder, 0, rightInorder.length);
+        System.arraycopy(postorder, 0, leftPostorder, 0, position);
+        System.arraycopy(postorder, position, rightPostorder, 0, rightPostorder.length);
+
+//        System.out.println(Arrays.toString(leftPostorder));
+//        System.out.println(Arrays.toString(leftInorder));
+//        System.out.println(Arrays.toString(rightPostorder));
+//        System.out.println(Arrays.toString(rightInorder));
+
+        root.left = buildTreeInorderPostorder(leftInorder, leftPostorder);
+        root.right = buildTreeInorderPostorder(rightInorder, rightPostorder);
 
         return root;
     }

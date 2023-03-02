@@ -1,52 +1,52 @@
-class Node {
-    public int data;
-    public Node next;
-    Node(int data){
-        this.data = data;
+class ListNode {
+    public int val;
+    public ListNode next;
+    ListNode(int val){
+        this.val = val;
         this.next = null;
     }
 }
 
 class LinkedList {
-    private Node head = null;
+    private ListNode head = null;
 
     public void push_back(int data){
-        Node new_node = new Node(data);
+        ListNode new_List_node = new ListNode(data);
         if(head == null){
-            head = new_node;
+            head = new_List_node;
             return;
         }
 
-        Node temp = head;
+        ListNode temp = head;
 
         while(temp.next != null)
             temp = temp.next;
 
-        temp.next = new_node;
+        temp.next = new_List_node;
     }
 
     public void push_front(int data){
-        Node new_node = new Node(data);
-        new_node.next = head;
-        head = new_node;
+        ListNode new_List_node = new ListNode(data);
+        new_List_node.next = head;
+        head = new_List_node;
     }
 
     public void push_index(int data, int index){
-        Node new_node = new Node(data);
-        Node temp = head;
+        ListNode new_List_node = new ListNode(data);
+        ListNode temp = head;
 
         while(--index > 0)
             temp = temp.next;
 
-        new_node.next = temp.next;
-        temp.next = new_node;
+        new_List_node.next = temp.next;
+        temp.next = new_List_node;
     }
 
     public void print(){
-        Node temp = head;
+        ListNode temp = head;
 
         while (temp != null){
-            System.out.print(temp.data + " -> ");
+            System.out.print(temp.val + " -> ");
             temp = temp.next;
         }
     }
