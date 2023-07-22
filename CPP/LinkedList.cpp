@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdio.h>
 
 using namespace std;
 
@@ -16,7 +15,7 @@ public:
     Node(int data)
     {
         this->data = data;
-        this->next = NULL;
+        this->next = nullptr;
     }
 };
 
@@ -27,14 +26,14 @@ class LinkedList
 public:
     LinkedList()
     {
-        head = NULL;
+        head = nullptr;
     }
 
     void push_back(int data)
     {
         Node *new_node = new Node(data);
 
-        if (head == NULL)
+        if (head == nullptr)
         {
             head = new_node;
             return;
@@ -42,7 +41,7 @@ public:
 
         Node *temp = head;
 
-        while (temp->next != NULL)
+        while (temp->next != nullptr)
             temp = temp->next;
 
         temp->next = new_node;
@@ -70,14 +69,14 @@ public:
 
     void printList()
     {
-        if (head == NULL)
+        if (head == nullptr)
             printf("Empty list\n");
 
         Node *temp = head;
 
-        while (temp != NULL)
+        while (temp != nullptr)
         {
-            if (temp->next == NULL)
+            if (temp->next == nullptr)
             {
                 printf("%d\n", temp->data);
                 break;

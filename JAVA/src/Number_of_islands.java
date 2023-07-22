@@ -29,7 +29,7 @@ public class Number_of_islands {
                 dfs(row, col, map, visited);
                 islands += 1;
 
-                printVisitedMap(visited);
+                printMap(visited);
             }
         }
 
@@ -51,7 +51,7 @@ public class Number_of_islands {
         }
     }
 
-    private static void printVisitedMap(boolean[][] map) {
+    private static void printMap(boolean[][] map) {
         for (boolean[] row : map) {
             for (boolean visited : row) {
                 System.out.print((visited ? 1 : "fal") + "\t");
