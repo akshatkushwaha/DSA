@@ -1,16 +1,8 @@
-/CPP/temp.cpp
-/CPP/temp
-/CPP/*.exe
-
-/C/temp.C
-/C/temp
-/C/*.exe
+/CPP/src/temp.cpp
 
 /JAVA/src/Temp.java
 
 /Python/temp.py
-
-/.vscode
 
 # Prerequisites
 *.d
