@@ -1,8 +1,13 @@
 /CPP/src/temp.cpp
 
-/JAVA/src/Temp.java
+/JAVA/src/Main.java
 
 /Python/temp.py
+
+*.exe
+*.class
+
+/JavaScript
 
 # Prerequisites
 *.d
@@ -201,3 +206,4 @@ dmypy.json
 cython_debug/
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#C++,Java,Python
+JAVA/src/Main.java

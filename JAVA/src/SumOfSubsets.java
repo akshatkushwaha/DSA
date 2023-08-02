@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class SumOfSubsets {
     public static void main(String[] args) {
@@ -10,17 +9,17 @@ public class SumOfSubsets {
         System.out.println(result);
     }
 
-    private static ArrayList<Integer> sumOfSubsets(ArrayList<Integer> numbers){
+    private static ArrayList<Integer> sumOfSubsets(ArrayList<Integer> numbers) {
         ArrayList<Integer> result = new ArrayList<>();
         result.add(0);
-        for(int i = 0; i < numbers.size(); ++i){
+        for (int i = 0; i < numbers.size(); ++i) {
             int sum = 0;
-            for(int j = i; j < numbers.size(); ++j){
+            for (int j = i; j < numbers.size(); ++j) {
                 sum += numbers.get(j);
                 result.add(sum);
             }
         }
-//        Collections.sort(result);
+        // Collections.sort(result);
 
         return result;
     }
