@@ -1,8 +1,10 @@
-/CPP/src/temp.cpp
+/CPP/temp.cpp
 
 /JAVA/src/Main.java
 
 /Python/temp.py
+
+/Rust/temp.rs
 
 *.exe
 *.class
