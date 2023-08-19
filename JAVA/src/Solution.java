@@ -1,50 +1,53 @@
-class Solution {
-    private static final int N = 1000;
-    private static final int MOD = (int) 1e9 + 7;
-    private static final long[] F = new long[N];
-    private static final long[] G = new long[N];
+import java.util.*;
 
-    static {
-        F[0] = 1;
-        G[0] = 1;
-        for (int i = 1; i < N; ++i) {
-            F[i] = F[i - 1] * i % MOD;
-            G[i] = qmi(F[i], MOD - 2, MOD);
-        }
-    }
-
-    public static long qmi(long a, long k, long p) {
-        long res = 1;
-        while (k != 0) {
-            if ((k & 1) == 1) {
-                res = res * a % p;
-            }
-            k >>= 1;
-            a = a * a % p;
-        }
-        return res;
-    }
-
-    public static long comb(int n, int k) {
-        return (F[n] * G[k] % MOD) * G[n - k] % MOD;
-    }
-
-    public int countGoodSubsequences(String s) {
-        int[] cnt = new int[26];
-        int mx = 1;
-        for (int i = 0; i < s.length(); ++i) {
-            mx = Math.max(mx, ++cnt[s.charAt(i) - 'a']);
-        }
-        long ans = 0;
-        for (int i = 1; i <= mx; ++i) {
-            long x = 1;
-            for (int j = 0; j < 26; ++j) {
-                if (cnt[j] >= i) {
-                    x = x * (comb(cnt[j], i) + 1) % MOD;
+public class Solution {
+    public boolean isValid(ArrayList<Pair<Integer, Integer>> queens) {
+        for (int i = 0; i < queens.size(); i++) {
+            for (int j = i + 1; j < queens.size(); j++) {
+                if (queens.get(i).first.equals(queens.get(j).first) || queens.get(i).second.equals(queens.get(j).second)
+                        ||
+                        Math.abs(queens.get(i).first - queens.get(j).first) == Math
+                                .abs(queens.get(i).second - queens.get(j).second)) {
+                    return false;
                 }
             }
-            ans = (ans + x - 1) % MOD;
         }
-        return (int) ans;
+        return true;
+    }
+
+    public String solve(ArrayList<Pair<Integer, Integer>> queens) {
+        if (isValid(queens)) {
+            return "true";
+        }
+        for (int i = 0; i < queens.size(); i++) {
+            for (int j = i + 1; j < queens.size(); j++) {
+                if (queens.get(i).first.equals(queens.get(j).first) || queens.get(i).second.equals(queens.get(j).second)
+                        ||
+                        Math.abs(queens.get(i).first - queens.get(j).first) == Math
+                                .abs(queens.get(i).second - queens.get(j).second)) {
+                    return "(" + queens.get(i).first + "," + queens.get(i).second + "),(" + queens.get(j).first + ","
+                            + queens.get(j).second + ")";
+                }
+            }
+        }
+        return "true";
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Pair<Integer, Integer>> queens = new ArrayList<>();
+        int lines = 8;
+        while (lines-- > 0 && scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.isEmpty()) {
+                break;
+            }
+            int y = Integer.parseInt(line.substring(1, line.indexOf(',')));
+            int x = Integer.parseInt(line.substring(line.indexOf(',') + 1, line.length() - 1));
+            queens.add(new Pair<>(y, x));
+        }
+
+        Solution s = new Solution();
+        System.out.println(s.solve(queens));
     }
 }
