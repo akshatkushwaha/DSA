@@ -5,12 +5,16 @@
 using namespace std;
 
 int main() {
-  int a;
-  cin >> a;
+    int a;
+    cin >> a;
 
-  for (int i = 0; i < a; i += a) {
-    cout << i << endl;
-  }
+    vector<int> vec;
 
-  return 0;
+    for (int i = 0; i < 100; i += a) {
+        cout << i << endl;
+
+        vec.push_back(i);
+    }
+
+    return 0;
 }
