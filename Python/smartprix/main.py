@@ -1,70 +1,72 @@
+import time
 import requests
-import json
-from bs4 import BeautifulSoup
-import xlsxwriter
-
-API_URLS = [
-    "https://www.smartprix.com/ui/api/page-info?k=1SYMJDYwYlD2HLGHKl2KMKjD6FGNGj3J2F5lHJA46j36DGO0nmmmmml2E50JQR6F0rj2E50JQR6F0tjAFL6D04GJ60ArjAFL6D04GJ60Atj4HMlnq0AF490nr0AF49j5AKHD2Qlns083023GN6jJ2Elrno0830KK5023GN6jKK5l6P4DM560GML0G70KLG4Cj6P4DM560MH4GEAF8jKLG4Cln0r0C8036DGOjO6A89L_KGJLzKH640K4GJ6c2K4zmYiY52L2YwSY27L6JYwomUiYJ676JJ6JYwYYiYLYwntmmrtvomtqnpiYKLYwntmmrturqqusmU",
-    "https://www.smartprix.com/ui/api/page-info?k=1SYMJDYwYlD2HLGHKl2KMKjD6FGNGj3J2F5lHJA46j36DGO0nmmmmml2E50JQR6F0rj2E50JQR6F0tjAFL6D04GJ60ArjAFL6D04GJ60Atj4HMlnq0AF490nr0AF49j5AKHD2Qlns083023GN6jJ2Elrno0830KK5023GN6jKK5l6P4DM560GML0G70KLG4Cj6P4DM560MH4GEAF8jKLG4Cln0r0C8036DGOjO6A89L_KGJLzKH640K4GJ6c2K4zmYiY52L2YwSY27L6JYwqmUiYJ676JJ6JYwYYiYLYwntmmrtvoqqpquiYKLYwntmmrtvomtovtU",
-    "https://www.smartprix.com/ui/api/page-info?k=1SYMJDYwYlD2HLGHKl2KMKjD6FGNGj3J2F5lHJA46j36DGO0nmmmmml2E50JQR6F0rj2E50JQR6F0tjAFL6D04GJ60ArjAFL6D04GJ60Atj4HMlnq0AF490nr0AF49j5AKHD2Qlns083023GN6jJ2Elrno0830KK5023GN6jKK5l6P4DM560GML0G70KLG4Cj6P4DM560MH4GEAF8jKLG4Cln0r0C8036DGOjO6A89L_KGJLzKH640K4GJ6c2K4zmYiY52L2YwSY27L6JYwsmUiYJ676JJ6JYwYYiYLYwntmmrtvouqpsmiYKLYwntmmrtvoqqnruU"
-]
-
-productList = []
+import pandas as pd
+from selenium.common.exceptions import StaleElementReferenceException
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 
-def processeFristTwentyLaptops():
-    URL = "https://www.smartprix.com/laptops/asus-lenovo-brand/price-below_100000/amd_ryzen_5-amd_ryzen_7-intel_core_i5-intel_core_i7-cpu/14_inch_15_inch-display/16_gb_above-ram/512_gb_ssd_above-ssd/exclude_out_of_stock-exclude_upcoming-stock/1_5_kg_below-weight?sort=spec_score&asc=0"
-    page = requests.get(URL)
+class Smartprix:
+    def __init__(self, url):
+        self.url = url
+        self.initializeDriver()
+        self.dataFrame = pd.DataFrame()
 
-    soup = BeautifulSoup(page.content, "html.parser")
-    script = soup.find_all("script")[3]
+    def initializeDriver(self):
+        self.driver = webdriver.Chrome()
+        self.driver.maximize_window()
+        self.driver.implicitly_wait(10)
+        self.driver.get(self.url)
 
-    data = json.loads(script.string)
+    def getProducts(self):
+        try:
+            loadmore = self.driver.find_element(By.CLASS_NAME, "sm-load-more")
+        except Exception as e:
+            pass
 
-    itemList = data["itemListElement"]
+        try:
+            while loadmore.is_displayed():
+                loadmore.click()
+                time.sleep(2)
 
-    for item in itemList:
-        product = {
-            "name": item["name"],
-            "url": item["url"]
-        }
-        productList.append(product)
+                loadmore = self.driver.find_element(
+                    By.CLASS_NAME, "sm-load-more")
+        except Exception as e:
+            pass
 
+        products = self.driver.find_elements(By.CLASS_NAME, "sm-product")
+        print("Number of products: ", len(products))
 
-def processRestUsingAPI(API_URLS):
-    for url in API_URLS:
-        data = requests.get(url).json()
-        itemList = data["item"]["searchResults"]["nodes"]
+        for product in products:
+            try:
+                name = product.find_element(By.TAG_NAME, "h2").text
+                link = product.find_element(
+                    By.TAG_NAME, "a").get_attribute("href")
 
-        for item in itemList:
-            product = {
-                "name": item["name"],
-                "url": "https://www.smartprix.com" + item["url"]
-            }
-            productList.append(product)
+                self.dataFrame = self.dataFrame._append(
+                    {"Name": name, "Link": link}, ignore_index=True
+                )
+                print("Product added:")
+                print("Name: ", name)
+                print("Link: ", link)
+                print("---------------------------------------------------------------")
 
+            except Exception as e:
+                pass
 
-def getLaptopDetails(URL):
-    page = requests.get(URL)
-    soup = BeautifulSoup(page.content, "html.parser")
+        self.driver.quit()
+
+    def writeData(self):
+        writer = pd.ExcelWriter(
+            "C:/Users/aksha/development/DSA/Python/smartprix/rawData.xlsx", engine="xlsxwriter")
+        self.dataFrame.to_excel(writer, sheet_name="Sheet1")
+        writer._save()
 
 
 if __name__ == "__main__":
-    processeFristTwentyLaptops()
-    processRestUsingAPI(API_URLS)
+    # URL = "https://www.smartprix.com/laptops/14_inch_15_inch-display/16_gb_above-ram/512_gb_ssd_above-ssd/exclude_out_of_stock-exclude_upcoming-stock"
+    URL = "https://www.smartprix.com/laptops/price-above_50000/14_inch_15_inch-display/16_gb_above-ram/512_gb_ssd_above-ssd/exclude_out_of_stock-exclude_upcoming-stock"
 
-    workbook = xlsxwriter.Workbook(
-        "C:/Users/aksha/development/DSA/Python/smartprix/raw.xlsx")
-    worksheet = workbook.add_worksheet()
-
-    row = 0
-    col = 0
-
-    for product in productList:
-        worksheet.write(row, col, product["name"])
-        worksheet.write(row, col+1, product["url"])
-        row += 1
-
-    workbook.close()
-
-    print("Done")
+    smartprix = Smartprix(URL)
+    smartprix.getProducts()
+    smartprix.writeData()
