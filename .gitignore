@@ -209,3 +209,5 @@ cython_debug/
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#C++,Java,Python
 JAVA/src/Main.java
+
+#testing nvim
